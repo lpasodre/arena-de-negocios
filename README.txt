@@ -1,25 +1,15 @@
-ARENA DE NEGÓCIOS — VERSÃO 1
+ARENA DE NEGÓCIOS — V3
 
-ARQUIVOS
-index.html              Interface principal
-css/style.css           Identidade visual e responsividade
-js/game.js              Motor do jogo, sorteio, pontuação, radar e sons
-js/questions.js         Banco de desafios editável
-assets/images/           Imagens e identidade visual
-assets/audio/            Sons do jogo
+V3 reconstruída a partir da identidade visual do PPT original.
 
-ÁUDIOS
-abertura.mp3: toca ao clicar em COMEÇAR
-decisao.mp3: toca ao registrar cada decisão
-final.mp3: toca durante o suspense antes do perfil final
+Conteúdo:
+- 48 desafios (8 por área) em js/questions.js;
+- sorteio controlado de 10 desafios por partida;
+- Caixa, Reputação, Capacidade, Crescimento e Risco;
+- alternativas bloqueadas com explicação do motivo;
+- abertura.mp3, decisao.mp3 e final.mp3;
+- perfil final, gráfico radar, maior competência e ponto de atenção;
+- layout responsivo;
+- banco de questões separado do motor do jogo.
 
-PARA TESTAR
-Abra index.html no navegador.
-
-PARA PUBLICAR NO GITHUB PAGES
-Envie todo o conteúdo desta pasta para a raiz do repositório, preservando as pastas.
-Depois ative o GitHub Pages para a branch main / root.
-
-BANCO DE QUESTÕES
-Novas questões devem ser adicionadas em js/questions.js seguindo o mesmo padrão dos objetos existentes.
-Esta V1 contém 18 desafios (3 por área), dos quais 10 são sorteados por partida.
+Para GitHub Pages: coloque index.html na raiz e preserve as pastas css, js e assets.
