@@ -103,7 +103,31 @@ button{cursor:pointer}
 @keyframes pop{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
 .feedback-panel p{font-size:1.08rem;margin:6px 0;color:#15243d}
 .concept{font-size:.88rem;color:#0b467a;font-weight:900}
-.next{position:absolute;left:14px;bottom:12px;background:var(--magenta);color:#fff;border:0;padding:11px 15px;font-size:.82rem;font-weight:900;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.next{
+ position:absolute;
+ right:16px;
+ top:50%;
+ transform:translateY(-50%);
+ width:52px;
+ height:52px;
+ border-radius:50%;
+ background:var(--magenta);
+ color:#fff;
+ border:2px solid rgba(255,255,255,.85);
+ font-size:1.7rem;
+ font-weight:900;
+ line-height:1;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ box-shadow:0 3px 8px rgba(0,0,0,.28);
+ transition:.18s transform,.18s filter;
+ z-index:6;
+}
+.next:hover{
+ transform:translateY(-50%) scale(1.06);
+ filter:brightness(1.08);
+}
 
 /* SUSPENSE */
 .suspense{display:flex;align-items:center;justify-content:center}
@@ -140,12 +164,47 @@ button{cursor:pointer}
 .error-box{z-index:5;background:#fff;color:#7b1020;border:3px solid #b93445;padding:20px;width:min(680px,90%);margin:auto;box-shadow:0 4px 10px rgba(0,0,0,.24)}
 .error-box h2{margin-top:0;color:#8d1721}
 
+
+.quit-btn{
+ position:fixed;left:12px;bottom:34px;z-index:101;
+ border:1px solid rgba(255,255,255,.55);
+ background:rgba(6,52,109,.62);
+ color:rgba(255,255,255,.92);
+ font-weight:700;
+ padding:7px 10px;
+ border-radius:999px;
+ font-size:.74rem;
+ letter-spacing:.01em;
+ box-shadow:0 2px 6px rgba(0,0,0,.14);
+ backdrop-filter:blur(3px);
+ opacity:.78;
+ transition:.18s opacity,.18s background;
+}
+.quit-btn:hover{
+ opacity:1;
+ background:rgba(6,52,109,.88);
+}
+.institutional-footer{
+ position:fixed;left:0;right:0;bottom:0;z-index:80;background:rgba(4,34,72,.92);
+ color:#fff;text-align:center;padding:6px 12px;font-size:.75rem;letter-spacing:.02em
+}
+.consequence-bubble{
+ position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);
+ z-index:120;width:min(680px,90vw);background:#fff;color:#15243d;border:3px solid #06346d;
+ box-shadow:0 16px 45px rgba(0,0,0,.28);padding:22px 24px;text-align:center;
+ animation:bubbleIn .25s forwards
+}
+.consequence-bubble h3{margin:0 0 10px;color:#07346d;font-size:1.35rem}
+.consequence-bubble p{margin:6px 0;line-height:1.5}
+.consequence-bubble button{margin-top:12px}
+@keyframes bubbleIn{to{transform:translate(-50%,-50%) scale(1)}}
+
 @media(max-width:780px){
  .welcome-inner{grid-template-columns:1fr;height:auto}.character{display:none}.logos-corner{width:150px;left:14px;top:14px}.speech{margin-top:70px;padding:20px}.welcome-controls{flex-direction:column}
  .roulette-grid{grid-template-columns:repeat(3,90px)}.slot-num{height:58px;font-size:2rem}
  .hud{padding-right:54px;overflow:auto}.hud-brand{display:none}.meters{display:flex;min-width:max-content}.meter{width:115px}
  .decision-head{grid-template-columns:40% 60%;min-height:130px}.area-wedge{padding:22px 30px 18px 14px;font-size:1rem}.case-head{font-size:1.05rem;padding:18px 14px}
- .options{width:94%}.option{font-size:.94rem;padding:12px}.feedback-panel{width:94%}.next{position:static;margin:12px 3%}
+ .options{width:94%}.option{font-size:.94rem;padding:12px}.feedback-panel{width:94%}.next{right:10px;top:50%;width:46px;height:46px;font-size:1.45rem}
  .final-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.stat:last-child{grid-column:1/-1}.competencies{grid-template-columns:1fr}.sound{top:7px;right:7px}
 }
 </style>
@@ -153,6 +212,8 @@ button{cursor:pointer}
 <body>
 <div id="app">
 <button id="soundBtn" class="sound" aria-label="Som">🔊</button>
+<button id="quitBtn" class="quit-btn" title="Voltar à tela inicial">✕ Encerrar</button>
+<div class="institutional-footer">Desenvolvido nos Cursos de Administração e Ciências Contábeis da Universidade Vale do Rio Doce</div>
 
 <section id="cover" class="screen cover">
  <div class="start-wrap"><button id="startBtn" class="ppt-button">Começar...</button></div>
@@ -165,7 +226,7 @@ button{cursor:pointer}
   <div>
    <div class="speech">
     <h1>Ei Gestor(a), bem-vindo(a) ao Arena de Negócios. Vamos iniciar nossa jornada no mundo corporativo?</h1>
-    <p>Você terá <b>10 desafios</b>. Cada escolha pode fortalecer uma parte da empresa e pressionar outra. Observe seu caixa: algumas decisões só estarão disponíveis se a empresa puder bancá-las.</p>
+    <p>Você terá <b>8 desafios</b>. Cada escolha pode fortalecer uma parte da empresa e pressionar outra. Observe seu caixa: algumas decisões só estarão disponíveis se a empresa puder bancá-las.</p>
    </div>
    <div class="welcome-controls"><input id="playerName" maxlength="24" placeholder="Seu nome (opcional)"><button id="beginBtn" class="ppt-button">Jogar!</button></div>
   </div>
@@ -205,7 +266,7 @@ button{cursor:pointer}
    </div>
    <div id="options" class="options"></div>
    <div id="feedbackPanel" class="feedback-panel hidden"><div id="effects" class="effects"></div><p id="feedbackText"></p><div id="concept" class="concept"></div></div>
-   <button id="nextBtn" class="next hidden">Próxima<br>Rodada</button>
+   <button id="nextBtn" class="next hidden" title="Próxima rodada" aria-label="Próxima rodada">➜</button>
   </div>
  </main>
 </section>
@@ -239,6 +300,13 @@ button{cursor:pointer}
 <section id="review" class="screen review ppt-bg hidden">
  <div class="review-box"><h2>Suas decisões</h2><div id="reviewList"></div><button id="reviewBack" class="ppt-button">Voltar</button></div>
 </section>
+
+<div id="consequenceBubble" class="consequence-bubble hidden">
+  <h3>🔄 Uma decisão anterior voltou</h3>
+  <p id="consequenceText"></p>
+  <button id="consequenceContinue" class="ppt-button">Continuar</button>
+</div>
+
 </div>
 <script src="js/questions.js?v=31"></script>
 <script>
@@ -249,8 +317,8 @@ const audio={
  final:new Audio('assets/audio/final.mp3')
 };
 Object.values(audio).forEach(a=>{a.preload='auto';a.volume=.82});
-let soundOn=true,playerName='',round=0,deck=[],history=[];
-const maxRounds=10;
+let soundOn=true,playerName='',round=0,deck=[],history=[],pendingConsequence=null,consequenceUsed=false;
+const maxRounds=8;
 let company,profile;
 const areaOrder=['Marketing','Gestão de Pessoas','Produção e Operações','Finanças','Contabilidade','Tributação'];
 const areaTitle={
@@ -261,7 +329,7 @@ const areaTitle={
  'Contabilidade':'Tomada de\nDecisão na área\ncontábil.',
  'Tributação':'Tomada de\nDecisão na área\ntributária.'
 };
-function reset(){company={caixa:100,reputacao:50,capacidade:50,crescimento:30,risco:20};profile={planejamento:0,financeiro:0,oportunidades:0,relacionamento:0,riscos:0};round=0;history=[]}
+function reset(){company={caixa:100,reputacao:50,capacidade:50,crescimento:30,risco:20};profile={planejamento:0,financeiro:0,oportunidades:0,relacionamento:0,riscos:0};round=0;history=[];pendingConsequence=null;consequenceUsed=false}
 function clamp(v,a=0,b=100){return Math.max(a,Math.min(b,v))}
 function money(v){return `R$ ${Math.round(v)}`}
 function play(n){if(!soundOn)return;const a=audio[n];a.currentTime=0;a.play().catch(()=>{})}
@@ -333,7 +401,19 @@ function playable(q){return q&&q.alternativas&&q.alternativas.some(a=>reqStatus(
 function ensurePlayable(){
  if(playable(deck[round]))return;
  let i=deck.findIndex((q,j)=>j>round&&playable(q));
- if(i>round)[deck[round],deck[i]]=[deck[i],deck[round]];
+ if(i>round){[deck[round],deck[i]]=[deck[i],deck[round]];return}
+ // Segurança pedagógica: nunca deixa o jogador sem opção.
+ const q=deck[round];
+ if(q&&q.alternativas){
+   q.alternativas.push({
+     texto:'Negociar prazo e reorganizar os compromissos para ganhar fôlego.',
+     custo:{tipo:'fixo',valor:0},
+     requisitos:{},
+     efeitos:{caixa:5,reputacao:-2,capacidade:-2,crescimento:-1,risco:4},
+     perfil:{planejamento:4,financeiro:5,oportunidades:1,relacionamento:2,riscos:3},
+     feedback:'Você preservou a continuidade da empresa negociando tempo. Ganhou algum fôlego financeiro, mas aceitou perdas operacionais e maior exposição.'
+   });
+ }
 }
 function costText(a){const c=a.custo||{};return c.valor>0?`Custo conhecido: ${money(c.valor)}`:'Sem desembolso imediato'}
 function render(){
@@ -362,15 +442,50 @@ function hud(){
 function choose(q,a){
  play('decisao');document.querySelectorAll('.option').forEach(b=>b.disabled=true);
  Object.entries(a.efeitos||{}).forEach(([k,v])=>company[k]+=v);
- ['reputacao','capacidade','crescimento','risco'].forEach(k=>company[k]=clamp(company[k]));
+ company.caixa=Math.max(0,company.caixa);['reputacao','capacidade','crescimento','risco'].forEach(k=>company[k]=clamp(company[k]));
  Object.entries(a.perfil||{}).forEach(([k,v])=>profile[k]=(profile[k]||0)+v);
+ // Uma única decisão da partida pode voltar como consequência depois.
+ if(!consequenceUsed && round<=3 && Math.random()<0.45){
+   pendingConsequence={
+     source:q.titulo,
+     text:`Na decisão “${q.titulo}”, sua escolha deixou efeitos que reapareceram agora. A empresa precisou absorver um impacto adicional.`,
+     efeitos:{caixa:-4,reputacao:-2,risco:3}
+   };
+ }
  history.push({q,a});hud();
  const icon={caixa:'💰',reputacao:'⭐',capacidade:'⚙️',crescimento:'📈',risco:'⚠️'},lab={caixa:'Caixa',reputacao:'Reputação',capacidade:'Capacidade',crescimento:'Crescimento',risco:'Risco'};
  $('#effects').innerHTML=Object.entries(a.efeitos||{}).filter(([,v])=>v!==0).map(([k,v])=>`<span class="effect ${v<0?'neg':''}">${icon[k]} ${lab[k]} ${v>0?'+':''}${k==='caixa'?money(v):v}</span>`).join('');
  $('#feedbackText').textContent=a.feedback;$('#concept').textContent=`💡 Conceito envolvido: ${q.conceito}.`;
  $('#feedbackPanel').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');$('#progressBar').style.width=`${(round+1)/maxRounds*100}%`;
 }
-function proceed(){round++;round>=maxRounds?finish():roulette()}
+function proceed(){
+ round++;
+ if(round>=maxRounds){finish();return}
+ if(pendingConsequence && !consequenceUsed && round>=4){
+   showConsequence();return;
+ }
+ roulette()
+}
+function showConsequence(){
+ if(!pendingConsequence){roulette();return}
+ consequenceUsed=true;
+ const e=pendingConsequence.efeitos||{};
+ Object.entries(e).forEach(([k,v])=>company[k]=(company[k]||0)+v);
+ company.caixa=Math.max(0,company.caixa);
+ ['reputacao','capacidade','crescimento','risco'].forEach(k=>company[k]=clamp(company[k]));
+ hud();
+ const parts=[];
+ if(e.caixa)parts.push(`💰 Caixa ${e.caixa>0?'+':''}${money(e.caixa)}`);
+ if(e.reputacao)parts.push(`⭐ Reputação ${e.reputacao>0?'+':''}${e.reputacao}`);
+ if(e.risco)parts.push(`⚠️ Risco ${e.risco>0?'+':''}${e.risco}`);
+ $('#consequenceText').innerHTML=`${pendingConsequence.text}<br><br><b>${parts.join(' • ')}</b>`;
+ $('#consequenceBubble').classList.remove('hidden');
+}
+function continueAfterConsequence(){
+ $('#consequenceBubble').classList.add('hidden');
+ pendingConsequence=null;
+ roulette();
+}
 function norm(){const m=maxRounds*5;return Object.fromEntries(Object.entries(profile).map(([k,v])=>[k,clamp(Math.round(v/m*100))]))}
 function classify(p){
  const vals=Object.values(p),avg=vals.reduce((a,b)=>a+b,0)/vals.length,range=Math.max(...vals)-Math.min(...vals);
@@ -420,9 +535,15 @@ function drawRadar(p){
 function review(){$('#reviewList').innerHTML=history.map((h,i)=>`<div class="review-item"><b>${i+1}. ${h.q.area} — ${h.q.titulo}</b><div>Sua decisão: ${h.a.texto}</div><div class="muted">${h.a.feedback}</div></div>`).join('');show('review')}
 function restart(){show('welcome')}
 function home(){show('cover')}
+function quitGame(){
+ stopAll();
+ pendingConsequence=null;
+ $('#consequenceBubble').classList.add('hidden');
+ show('cover');
+}
 document.addEventListener('DOMContentLoaded',()=>{
  $('#startBtn').onclick=enterWelcome;$('#beginBtn').onclick=begin;$('#nextBtn').onclick=proceed;$('#reviewBtn').onclick=review;$('#reviewBack').onclick=()=>show('final');$('#restartBtn').onclick=restart;$('#homeBtn').onclick=home;
- $('#soundBtn').onclick=()=>{soundOn=!soundOn;$('#soundBtn').textContent=soundOn?'🔊':'🔇';if(!soundOn)stopAll()};
+ $('#soundBtn').onclick=()=>{soundOn=!soundOn;$('#soundBtn').textContent=soundOn?'🔊':'🔇';if(!soundOn)stopAll()};$('#quitBtn').onclick=quitGame;$('#consequenceContinue').onclick=continueAfterConsequence;
  $('#playerName').addEventListener('keydown',e=>{if(e.key==='Enter')begin()});
 });
 </script>
