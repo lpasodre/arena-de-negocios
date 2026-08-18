@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06346d">
+<title>Arena de Negócios</title>
+<style>
+:root{
+ --navy:#06346d;--navy2:#08284f;--cyan:#53cbe7;--cyan2:#2399c7;
+ --ice:#aabbd9;--lav:#ead8ee;--mint:#d8ffd1;--magenta:#cf20bb;
+ --green:#138968;--red:#c93642;--gold:#ffe22e;--ink:#0b2445;--white:#fff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#082f65;color:var(--ink)}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+#app{min-height:100vh}
+.screen{min-height:100vh;position:relative;overflow:hidden}
+.sound{position:fixed;right:14px;top:14px;z-index:100;width:46px;height:46px;border:2px solid rgba(255,255,255,.85);border-radius:8px;background:#06346d;color:#fff;font-size:1.15rem}
+
+/* IDENTIDADE VISUAL PPT */
+.ppt-bg{
+ background:linear-gradient(180deg,#55cee7 0%,#47c4e3 24%,#2497c5 68%,#075b91 100%);
+ color:#fff;
+}
+.ppt-bg:after{
+ content:"";position:absolute;right:3%;bottom:3%;width:22%;height:42%;
+ background:repeating-linear-gradient(135deg,transparent 0 19px,rgba(255,255,255,.72) 20px 22px,transparent 23px 35px);
+ clip-path:polygon(48% 0,100% 0,100% 100%,0 100%);opacity:.75;pointer-events:none
+}
+.ppt-button{
+ border:0;background:linear-gradient(#155694,#062f6c);color:#fff;font-weight:900;
+ padding:13px 28px;min-width:165px;box-shadow:0 3px 0 rgba(0,0,0,.25);border-radius:2px
+}
+.ppt-button:hover{filter:brightness(1.12)}
+
+/* CAPA */
+.cover{display:flex;align-items:flex-end;justify-content:center;background:#aabbd9 url('assets/images/capa-arena.png') center/cover no-repeat}
+.cover .start-wrap{z-index:3;margin-bottom:4.5vh}
+
+/* BOAS-VINDAS */
+.welcome{display:flex;align-items:center;justify-content:center;padding:18px}
+.welcome-inner{width:min(1180px,96vw);height:min(700px,90vh);position:relative;z-index:2;display:grid;grid-template-columns:38% 62%;align-items:center}
+.character{max-height:620px;max-width:98%;justify-self:center;align-self:end}
+.speech{background:#fff;color:#111;border:1px solid #777;padding:26px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2)}
+.speech h1{font-size:clamp(1.55rem,3.4vw,3.05rem);font-weight:400;line-height:1.23;margin:0;color:#111}
+.speech p{font-size:1.03rem;line-height:1.52;color:#283446}
+.welcome-controls{display:flex;gap:10px;margin-top:18px}
+.welcome-controls input{flex:1;padding:12px 14px;border:1px solid #aaa;background:#fff;color:#111}
+.logos-corner{position:absolute;left:38px;top:26px;width:225px;z-index:2}
+
+/* SORTEIO — alto contraste em qualquer tela */
+.roulette{display:flex;align-items:center;justify-content:center;text-align:center}
+.roulette-content{position:relative;z-index:3;width:min(760px,94vw)}
+.round-title{color:#fff;font-size:clamp(1.7rem,4vw,3.2rem);font-weight:900;text-shadow:0 2px 4px rgba(0,0,0,.28);margin-bottom:22px}
+.roulette-sub{color:#eafcff;font-size:1rem;font-weight:800;margin-bottom:16px}
+.roulette-grid{display:grid;grid-template-columns:repeat(3,145px);gap:12px;justify-content:center}
+.slot-num{
+ height:76px;background:linear-gradient(#18589b,#06346d);border:2px solid rgba(255,255,255,.35);
+ color:#fff;font-size:2.8rem;font-weight:900;display:flex;align-items:center;justify-content:center;
+ box-shadow:0 3px 6px rgba(0,0,0,.28);transition:.1s
+}
+.slot-num.active{outline:5px solid var(--gold);background:#062d65;transform:scale(1.05)}
+.roulette-area{
+ margin:22px auto 0;background:#062f6c;color:#fff;padding:14px 28px;font-weight:900;
+ font-size:clamp(1rem,2.6vw,1.4rem);width:min(500px,90%);box-shadow:0 3px 6px rgba(0,0,0,.28)
+}
+
+/* JOGO */
+.game{padding:0 0 28px}
+.hud{position:relative;z-index:4;background:#06346d;color:#fff;padding:8px 54px 8px 14px;display:flex;gap:8px;align-items:center;border-bottom:3px solid rgba(255,255,255,.42)}
+.hud-brand{width:118px;font-weight:900;font-size:.74rem;line-height:1.05;color:#fff}
+.hud-brand img{width:105px;max-height:46px;object-fit:contain}
+.meters{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;flex:1}
+.meter{background:rgba(255,255,255,.12);padding:7px 8px;border:1px solid rgba(255,255,255,.30);color:#fff}
+.meter-top{display:flex;justify-content:space-between;gap:6px;font-size:.74rem;font-weight:900;color:#fff}
+.bar{height:5px;background:rgba(255,255,255,.24);margin-top:5px}
+.bar span{display:block;height:100%;background:#fff;transition:width .3s}
+.game-shell{width:min(1180px,96vw);margin:18px auto;position:relative;z-index:3}
+.progressline{display:flex;justify-content:space-between;color:#fff;font-weight:900;margin-bottom:7px;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+.progress{height:7px;background:rgba(255,255,255,.32);margin-bottom:13px}
+.progress span{height:100%;display:block;background:var(--gold);transition:width .3s}
+.decision-card{background:rgba(255,255,255,.08);min-height:565px;position:relative;padding-bottom:58px;border:1px solid rgba(255,255,255,.18)}
+.decision-head{display:grid;grid-template-columns:32% 68%;min-height:165px}
+.area-wedge{background:#06346d;color:#fff;clip-path:polygon(0 0,100% 0,76% 100%,0 100%);padding:28px 55px 24px 24px;font-size:clamp(1.15rem,2.4vw,2rem);font-weight:900;line-height:1.08}
+.case-head{padding:25px 42px 10px 10px;color:#fff;font-weight:800;font-size:clamp(1.2rem,2.4vw,2rem);line-height:1.18;display:flex;align-items:center;text-shadow:0 1px 3px rgba(0,0,0,.22)}
+.question-title{font-size:1rem;text-transform:uppercase;letter-spacing:.08em;color:#e9fbff;display:block;margin-bottom:6px}
+.options{width:min(860px,90%);margin:0 auto;display:grid;gap:13px}
+.option{border:1px solid #777;padding:15px 18px;text-align:center;color:#12213a;font-weight:500;font-size:1.03rem;box-shadow:0 3px 5px rgba(0,0,0,.25);transition:.15s}
+.option:nth-child(odd){background:var(--lav)}.option:nth-child(even){background:var(--mint)}
+.option:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.04)}
+.option:disabled{background:#d9d9d9;color:#6f6f6f;cursor:not-allowed}
+.cost{display:block;margin-top:6px;font-size:.82rem;font-weight:900;color:#0d3c70}
+.lock{margin-top:7px;background:#fff;color:#8d1721;border:1px solid #b65050;padding:8px;font-size:.82rem;line-height:1.35}
+.or{font-weight:900;color:#fff;text-align:center;margin:-4px 0;font-size:1rem;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+.feedback-panel{margin:18px auto 0;width:min(940px,92%);background:#fff;color:#15243d;border:1px solid #777;padding:15px 17px;box-shadow:0 3px 7px rgba(0,0,0,.25)}
+.effects{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:10px}
+.effect{padding:7px 11px;border-radius:5px;color:#fff;font-weight:900;background:var(--green);animation:pop .35s both}
+.effect.neg{background:var(--red)}
+.effect:nth-child(2){animation-delay:.1s}.effect:nth-child(3){animation-delay:.2s}.effect:nth-child(4){animation-delay:.3s}.effect:nth-child(5){animation-delay:.4s}
+@keyframes pop{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
+.feedback-panel p{font-size:1.08rem;margin:6px 0;color:#15243d}
+.concept{font-size:.88rem;color:#0b467a;font-weight:900}
+.next{position:absolute;left:14px;bottom:12px;background:var(--magenta);color:#fff;border:0;padding:11px 15px;font-size:.82rem;font-weight:900;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+
+/* SUSPENSE */
+.suspense{display:flex;align-items:center;justify-content:center}
+.suspense-card{z-index:3;background:#fff;color:#12213a;border:1px solid #777;padding:28px 36px;text-align:center;width:min(700px,90%);box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.suspense-card h2{color:#07346d;font-size:clamp(1.8rem,4vw,3rem);margin:5px 0 13px}
+.scan{height:12px;background:#dce5ef;margin:24px auto 0;overflow:hidden}
+.scan span{display:block;height:100%;width:28%;background:#07346d;animation:scan 1s infinite}
+@keyframes scan{from{transform:translateX(-110%)}to{transform:translateX(370%)}}
+
+/* FINAL */
+.final{padding:20px;display:flex;align-items:center;justify-content:center}
+.final-shell{width:min(1180px,96vw);position:relative;z-index:3}
+.final-title{text-align:center;color:#fff;font-size:clamp(2rem,4vw,3.7rem);font-weight:900;margin-bottom:14px;text-shadow:0 2px 5px rgba(0,0,0,.28)}
+.final-card{background:#fff;color:#15243d;border:1px solid #666;padding:18px 20px;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.final-desc{font-size:1.02rem;line-height:1.45;color:#15243d}
+.final-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:15px}
+.stats-box,.radar-box{background:#f7fbfd;color:#15243d;border:1px solid #8a8a8a;padding:14px}
+.stats-box h3,.radar-box h3{color:#07346d;margin:0 0 10px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.stat{text-align:center;background:#edf7fb;color:#15243d;border:1px solid #99bfd0;padding:8px}
+.stat b{display:block;color:#07346d;font-size:1.08rem}
+.competencies{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}
+.comp{background:#fff;color:#15243d;border:1px solid #8a8a8a;padding:12px}
+.comp strong{color:#07346d}.comp p{font-size:.87rem;margin:6px 0 0;line-height:1.4;color:#49566b}
+.final-actions{display:flex;gap:10px;justify-content:center;margin-top:15px}
+.home{position:absolute;right:6px;bottom:6px;width:36px;height:36px;border:0;background:#d82626;color:#fff;font-size:1.2rem}
+
+/* REVISÃO */
+.review{padding:25px;display:flex;align-items:center;justify-content:center}
+.review-box{z-index:3;width:min(850px,94vw);max-height:88vh;overflow:auto;background:#fff;color:#15243d;border:1px solid #777;padding:22px}
+.review-box h2{color:#07346d}.review-item{padding:11px 0;border-bottom:1px solid #ccc}.review-item b{color:#07346d}.review-item div{margin-top:4px}.muted{color:#5c6878;font-size:.86rem}
+
+/* erro visível em vez de tela vazia */
+.error-box{z-index:5;background:#fff;color:#7b1020;border:3px solid #b93445;padding:20px;width:min(680px,90%);margin:auto;box-shadow:0 4px 10px rgba(0,0,0,.24)}
+.error-box h2{margin-top:0;color:#8d1721}
+
+@media(max-width:780px){
+ .welcome-inner{grid-template-columns:1fr;height:auto}.character{display:none}.logos-corner{width:150px;left:14px;top:14px}.speech{margin-top:70px;padding:20px}.welcome-controls{flex-direction:column}
+ .roulette-grid{grid-template-columns:repeat(3,90px)}.slot-num{height:58px;font-size:2rem}
+ .hud{padding-right:54px;overflow:auto}.hud-brand{display:none}.meters{display:flex;min-width:max-content}.meter{width:115px}
+ .decision-head{grid-template-columns:40% 60%;min-height:130px}.area-wedge{padding:22px 30px 18px 14px;font-size:1rem}.case-head{font-size:1.05rem;padding:18px 14px}
+ .options{width:94%}.option{font-size:.94rem;padding:12px}.feedback-panel{width:94%}.next{position:static;margin:12px 3%}
+ .final-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.stat:last-child{grid-column:1/-1}.competencies{grid-template-columns:1fr}.sound{top:7px;right:7px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<button id="soundBtn" class="sound" aria-label="Som">🔊</button>
+
+<section id="cover" class="screen cover">
+ <div class="start-wrap"><button id="startBtn" class="ppt-button">Começar...</button></div>
+</section>
+
+<section id="welcome" class="screen welcome ppt-bg hidden">
+ <img class="logos-corner" src="assets/images/logos-cursos.png" alt="Administração e Ciências Contábeis">
+ <div class="welcome-inner">
+  <img class="character" src="assets/images/personagem.png" alt="">
+  <div>
+   <div class="speech">
+    <h1>Ei Gestor(a), bem-vindo(a) ao Arena de Negócios. Vamos iniciar nossa jornada no mundo corporativo?</h1>
+    <p>Você terá <b>10 desafios</b>. Cada escolha pode fortalecer uma parte da empresa e pressionar outra. Observe seu caixa: algumas decisões só estarão disponíveis se a empresa puder bancá-las.</p>
+   </div>
+   <div class="welcome-controls"><input id="playerName" maxlength="24" placeholder="Seu nome (opcional)"><button id="beginBtn" class="ppt-button">Jogar!</button></div>
+  </div>
+ </div>
+</section>
+
+<section id="roulette" class="screen roulette ppt-bg hidden">
+ <div id="rouletteContent" class="roulette-content">
+  <div id="rouletteRound" class="round-title">1ª Rodada</div>
+  <div class="roulette-sub">Sorteando a área do próximo desafio...</div>
+  <div class="roulette-grid">
+   <div class="slot-num">1</div><div class="slot-num">2</div><div class="slot-num">3</div>
+   <div class="slot-num">4</div><div class="slot-num">5</div><div class="slot-num">6</div>
+  </div>
+  <div id="rouletteArea" class="roulette-area">Sorteando área...</div>
+ </div>
+</section>
+
+<section id="game" class="screen game ppt-bg hidden">
+ <div class="hud">
+  <div class="hud-brand"><img src="assets/images/logos-cursos.png" alt=""><div>ARENA DE<br>NEGÓCIOS</div></div>
+  <div class="meters">
+   <div class="meter"><div class="meter-top"><span>💰 Caixa</span><b id="cash">R$ 100</b></div><div class="bar"><span id="barCash"></span></div></div>
+   <div class="meter"><div class="meter-top"><span>⭐ Reputação</span><b id="rep">50</b></div><div class="bar"><span id="barRep"></span></div></div>
+   <div class="meter"><div class="meter-top"><span>⚙️ Capacidade</span><b id="cap">50</b></div><div class="bar"><span id="barCap"></span></div></div>
+   <div class="meter"><div class="meter-top"><span>📈 Crescimento</span><b id="growth">30</b></div><div class="bar"><span id="barGrowth"></span></div></div>
+   <div class="meter"><div class="meter-top"><span>⚠️ Risco</span><b id="risk">20</b></div><div class="bar"><span id="barRisk"></span></div></div>
+  </div>
+ </div>
+ <main class="game-shell">
+  <div class="progressline"><span id="roundLabel">1ª Rodada</span><span id="areaSmall">Marketing</span></div>
+  <div class="progress"><span id="progressBar"></span></div>
+  <div class="decision-card">
+   <div class="decision-head">
+    <div id="areaLabel" class="area-wedge">Tomada de<br>Decisão em<br>Marketing</div>
+    <div class="case-head"><div><span class="question-title" id="challengeTitle"></span><span id="situation"></span></div></div>
+   </div>
+   <div id="options" class="options"></div>
+   <div id="feedbackPanel" class="feedback-panel hidden"><div id="effects" class="effects"></div><p id="feedbackText"></p><div id="concept" class="concept"></div></div>
+   <button id="nextBtn" class="next hidden">Próxima<br>Rodada</button>
+  </div>
+ </main>
+</section>
+
+<section id="suspense" class="screen suspense ppt-bg hidden">
+ <div class="suspense-card"><h2>Você chegou ao fim do jogo!</h2><p><b id="suspenseName"></b>, vamos ver o seu perfil?</p><div class="scan"><span></span></div></div>
+</section>
+
+<section id="final" class="screen final ppt-bg hidden">
+ <div class="final-shell">
+  <div id="profileTitle" class="final-title">Gestor(a) Estratégico(a)</div>
+  <div class="final-card">
+   <p id="profileDesc" class="final-desc"></p>
+   <div class="final-grid">
+    <div>
+     <div class="stats-box"><h3>Resultados da sua empresa</h3><div class="stats">
+      <div class="stat">💰<b id="fCash"></b><small>Caixa</small></div><div class="stat">⭐<b id="fRep"></b><small>Reputação</small></div>
+      <div class="stat">⚙️<b id="fCap"></b><small>Capacidade</small></div><div class="stat">📈<b id="fGrowth"></b><small>Crescimento</small></div>
+      <div class="stat">⚠️<b id="fRisk"></b><small>Risco</small></div>
+     </div></div>
+     <div class="competencies"><div class="comp"><strong>🏆 Maior competência: <span id="bestTitle"></span></strong><p id="bestText"></p></div><div class="comp"><strong>⚠️ Ponto de atenção: <span id="attentionTitle"></span></strong><p id="attentionText"></p></div></div>
+    </div>
+    <div class="radar-box"><h3>Seu radar de competências</h3><canvas id="radar"></canvas></div>
+   </div>
+   <div class="final-actions"><button id="reviewBtn" class="ppt-button">Rever decisões</button><button id="restartBtn" class="ppt-button">Nova jornada</button></div>
+  </div>
+  <button id="homeBtn" class="home">⌂</button>
+ </div>
+</section>
+
+<section id="review" class="screen review ppt-bg hidden">
+ <div class="review-box"><h2>Suas decisões</h2><div id="reviewList"></div><button id="reviewBack" class="ppt-button">Voltar</button></div>
+</section>
+</div>
+<script src="js/questions.js?v=31"></script>
+<script>
+const $=s=>document.querySelector(s);
+const audio={
+ abertura:new Audio('assets/audio/abertura.mp3'),
+ decisao:new Audio('assets/audio/decisao.mp3'),
+ final:new Audio('assets/audio/final.mp3')
+};
+Object.values(audio).forEach(a=>{a.preload='auto';a.volume=.82});
+let soundOn=true,playerName='',round=0,deck=[],history=[];
+const maxRounds=10;
+let company,profile;
+const areaOrder=['Marketing','Gestão de Pessoas','Produção e Operações','Finanças','Contabilidade','Tributação'];
+const areaTitle={
+ 'Marketing':'Tomada de\nDecisão em\nMarketing',
+ 'Gestão de Pessoas':'Tomada de\nDecisão em\nGestão de Pessoas',
+ 'Produção e Operações':'Tomada de\nDecisão em\nProdução',
+ 'Finanças':'Tomada de\nDecisão em\nFinanças',
+ 'Contabilidade':'Tomada de\nDecisão na área\ncontábil.',
+ 'Tributação':'Tomada de\nDecisão na área\ntributária.'
+};
+function reset(){company={caixa:100,reputacao:50,capacidade:50,crescimento:30,risco:20};profile={planejamento:0,financeiro:0,oportunidades:0,relacionamento:0,riscos:0};round=0;history=[]}
+function clamp(v,a=0,b=100){return Math.max(a,Math.min(b,v))}
+function money(v){return `R$ ${Math.round(v)}`}
+function play(n){if(!soundOn)return;const a=audio[n];a.currentTime=0;a.play().catch(()=>{})}
+function stopAll(){Object.values(audio).forEach(a=>{a.pause();a.currentTime=0})}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));const el=$('#'+id);if(el)el.classList.remove('hidden');window.scrollTo(0,0)}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function fail(message){show('roulette');$('#rouletteContent').innerHTML=`<div class="error-box"><h2>Não foi possível iniciar a rodada.</h2><p>${message}</p><p>Atualize a página. Se o problema continuar, confirme se o arquivo <b>js/questions.js</b> foi enviado ao GitHub junto com o index.</p></div>`}
+function enterWelcome(){play('abertura');show('welcome')}
+function begin(){
+ try{
+   playerName=($('#playerName').value||'').trim()||'Gestor(a)';
+   stopAll();reset();
+   if(!window.ARENA_QUESTOES || !Array.isArray(window.ARENA_QUESTOES) || window.ARENA_QUESTOES.length<10){
+      fail('O banco de questões não foi carregado corretamente.'); return;
+   }
+   deck=buildDeck();
+   if(deck.length<maxRounds){fail('O banco não possui questões suficientes para montar a partida.');return}
+   roulette();
+ }catch(e){console.error(e);fail('O jogo encontrou um erro ao preparar a partida.')}
+}
+function buildDeck(){
+ const all=[...window.ARENA_QUESTOES],g={};
+ all.forEach(q=>(g[q.area]??=[]).push(q));
+ Object.values(g).forEach(shuffle);
+ let picked=[];
+ areaOrder.forEach(a=>{if(g[a]&&g[a].length)picked.push(g[a].pop())});
+ let pool=Object.values(g).flat();shuffle(pool);
+ picked=picked.concat(pool.slice(0,Math.max(0,maxRounds-picked.length)));
+ let ordered=[];
+ while(picked.length){
+   const last=ordered.length?ordered[ordered.length-1].area:null;
+   let i=picked.findIndex(q=>q.area!==last);if(i<0)i=0;
+   ordered.push(picked.splice(i,1)[0]);
+ }
+ return ordered.slice(0,maxRounds);
+}
+function ordinal(n){return `${n}ª Rodada`}
+function roulette(){
+ const q=deck[round];
+ if(!q){fail('Nenhum desafio foi selecionado para esta rodada.');return}
+ show('roulette');
+ $('#rouletteRound').textContent=ordinal(round+1);
+ $('#rouletteArea').textContent='Sorteando área...';
+ const boxes=[...document.querySelectorAll('.slot-num')];
+ let i=0;
+ const t=setInterval(()=>{
+   boxes.forEach(b=>b.classList.remove('active'));
+   if(boxes.length)boxes[i%boxes.length].classList.add('active');
+   $('#rouletteArea').textContent=areaOrder[i%areaOrder.length];
+   i++;
+   if(i===18){
+     clearInterval(t);boxes.forEach(b=>b.classList.remove('active'));
+     const idx=areaOrder.indexOf(q.area);
+     if(idx>=0&&boxes[idx])boxes[idx].classList.add('active');
+     $('#rouletteArea').textContent=q.area;
+     setTimeout(render,650);
+   }
+ },90);
+}
+function reqStatus(a){
+ const r=a.requisitos||{},why=[];
+ if(r.caixaMinimo!=null&&company.caixa<r.caixaMinimo)why.push(`Esta decisão exige ${money(r.caixaMinimo)}, mas seu caixa atual é ${money(company.caixa)}. Faltam ${money(r.caixaMinimo-company.caixa)}.`);
+ if(r.capacidadeMinima!=null&&company.capacidade<r.capacidadeMinima)why.push(`Exige Capacidade ${r.capacidadeMinima}, mas sua empresa possui ${Math.round(company.capacidade)}.`);
+ if(r.reputacaoMinima!=null&&company.reputacao<r.reputacaoMinima)why.push(`Exige Reputação ${r.reputacaoMinima}, mas sua empresa possui ${Math.round(company.reputacao)}.`);
+ if(r.crescimentoMinimo!=null&&company.crescimento<r.crescimentoMinimo)why.push(`Exige Crescimento ${r.crescimentoMinimo}, mas sua empresa possui ${Math.round(company.crescimento)}.`);
+ return{ok:!why.length,why};
+}
+function playable(q){return q&&q.alternativas&&q.alternativas.some(a=>reqStatus(a).ok)}
+function ensurePlayable(){
+ if(playable(deck[round]))return;
+ let i=deck.findIndex((q,j)=>j>round&&playable(q));
+ if(i>round)[deck[round],deck[i]]=[deck[i],deck[round]];
+}
+function costText(a){const c=a.custo||{};return c.valor>0?`Custo conhecido: ${money(c.valor)}`:'Sem desembolso imediato'}
+function render(){
+ try{
+   ensurePlayable();const q=deck[round];if(!q){fail('A rodada não encontrou um desafio válido.');return}
+   show('game');
+   $('#roundLabel').textContent=ordinal(round+1);$('#areaSmall').textContent=q.area;
+   $('#progressBar').style.width=`${round/maxRounds*100}%`;
+   $('#areaLabel').innerHTML=(areaTitle[q.area]||q.area).split('\n').join('<br>');
+   $('#challengeTitle').textContent=q.titulo;$('#situation').textContent=q.situacao;
+   $('#options').innerHTML='';$('#feedbackPanel').classList.add('hidden');$('#nextBtn').classList.add('hidden');
+   q.alternativas.forEach((a,i)=>{
+      const st=reqStatus(a),b=document.createElement('button');b.className='option';b.disabled=!st.ok;
+      b.innerHTML=`<b>${a.texto}</b><span class="cost">${costText(a)}</span>${!st.ok?`<div class="lock">🔒 <b>Indisponível no momento.</b><br>${st.why.join('<br>')}</div>`:''}`;
+      if(st.ok)b.onclick=()=>choose(q,a);
+      $('#options').appendChild(b);
+      if(i<q.alternativas.length-1){let o=document.createElement('div');o.className='or';o.textContent='ou';$('#options').appendChild(o)}
+   });
+   hud();
+ }catch(e){console.error(e);fail('O jogo encontrou um erro ao exibir o desafio.')}
+}
+function hud(){
+ $('#cash').textContent=money(company.caixa);$('#rep').textContent=Math.round(company.reputacao);$('#cap').textContent=Math.round(company.capacidade);$('#growth').textContent=Math.round(company.crescimento);$('#risk').textContent=Math.round(company.risco);
+ $('#barCash').style.width=`${clamp(company.caixa)}%`;$('#barRep').style.width=`${company.reputacao}%`;$('#barCap').style.width=`${company.capacidade}%`;$('#barGrowth').style.width=`${company.crescimento}%`;$('#barRisk').style.width=`${company.risco}%`;
+}
+function choose(q,a){
+ play('decisao');document.querySelectorAll('.option').forEach(b=>b.disabled=true);
+ Object.entries(a.efeitos||{}).forEach(([k,v])=>company[k]+=v);
+ ['reputacao','capacidade','crescimento','risco'].forEach(k=>company[k]=clamp(company[k]));
+ Object.entries(a.perfil||{}).forEach(([k,v])=>profile[k]=(profile[k]||0)+v);
+ history.push({q,a});hud();
+ const icon={caixa:'💰',reputacao:'⭐',capacidade:'⚙️',crescimento:'📈',risco:'⚠️'},lab={caixa:'Caixa',reputacao:'Reputação',capacidade:'Capacidade',crescimento:'Crescimento',risco:'Risco'};
+ $('#effects').innerHTML=Object.entries(a.efeitos||{}).filter(([,v])=>v!==0).map(([k,v])=>`<span class="effect ${v<0?'neg':''}">${icon[k]} ${lab[k]} ${v>0?'+':''}${k==='caixa'?money(v):v}</span>`).join('');
+ $('#feedbackText').textContent=a.feedback;$('#concept').textContent=`💡 Conceito envolvido: ${q.conceito}.`;
+ $('#feedbackPanel').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');$('#progressBar').style.width=`${(round+1)/maxRounds*100}%`;
+}
+function proceed(){round++;round>=maxRounds?finish():roulette()}
+function norm(){const m=maxRounds*5;return Object.fromEntries(Object.entries(profile).map(([k,v])=>[k,clamp(Math.round(v/m*100))]))}
+function classify(p){
+ const vals=Object.values(p),avg=vals.reduce((a,b)=>a+b,0)/vals.length,range=Math.max(...vals)-Math.min(...vals);
+ if(p.planejamento>=70&&p.riscos>=65&&p.oportunidades>=45)return['Gestor(a) Estratégico(a)','Você apresentou equilíbrio entre análise, resultados e exposição ao risco. Seu perfil demonstra visão estratégica, capacidade de planejamento e preocupação com sustentabilidade e crescimento contínuo.'];
+ if(p.financeiro>=72&&p.oportunidades>=55)return['Focado(a) em Resultados','Você demonstrou foco em resultados e coragem para buscar crescimento. Em alguns momentos, priorizou retorno e velocidade acima da estabilidade.'];
+ if(p.relacionamento>=72)return['Construtor(a) de Reputação','Você demonstrou preocupação com credibilidade, qualidade e confiança nas decisões tomadas, valorizando relações sólidas e sustentáveis.'];
+ if(p.oportunidades>=72&&p.riscos<=45)return['Tomador(a) de Risco','Você demonstrou iniciativa e disposição para assumir riscos em busca de grandes resultados e crescimento.'];
+ if(p.planejamento<=42&&p.oportunidades>=60)return['Decisor(a) Ágil','Você demonstrou iniciativa e rapidez nas decisões. Sua agilidade é uma força, mas exige atenção à análise dos riscos e consequências.'];
+ if(p.riscos>=78&&p.oportunidades<=48)return['Conservador(a)','Você demonstrou cautela e preocupação com estabilidade, evitando exposições altas. Isso reduz perdas, mas pode limitar algumas oportunidades.'];
+ if(p.financeiro>=65&&p.planejamento<=48)return['Gestor(a) de Curto Prazo','Você demonstrou foco em resultados rápidos e capacidade de responder de forma prática às situações, com atenção especial necessária aos impactos futuros.'];
+ if(range<=25||(avg>=48&&avg<=72))return['Gestor(a) Equilibrado(a)','Você demonstrou equilíbrio nas decisões, buscando estabilidade sem comprometer oportunidades e reputação.'];
+ return['Gestor(a) Estratégico(a)','Você demonstrou capacidade de combinar diferentes critérios e ajustar sua postura conforme os desafios da empresa.'];
+}
+const comp={
+ planejamento:['Planejamento','Você demonstrou capacidade de avaliar consequências antes de comprometer recursos.'],
+ financeiro:['Gestão Financeira','Você mostrou atenção ao caixa e aos impactos financeiros das alternativas.'],
+ oportunidades:['Crescimento & Oportunidades','Você demonstrou facilidade para identificar momentos favoráveis e possibilidades de crescimento.'],
+ relacionamento:['Relacionamento & Reputação','Você valorizou confiança, clientes, equipe e sustentabilidade das relações.'],
+ riscos:['Gestão de Riscos','Você demonstrou cuidado ao avaliar exposição e preservar alternativas para imprevistos.']
+};
+const att={
+ planejamento:'Em algumas situações, agir rapidamente pesou mais que analisar todos os efeitos.',
+ financeiro:'Algumas escolhas reduziram sua margem financeira para reagir a imprevistos.',
+ oportunidades:'Você pode proteger tanto a empresa que algumas oportunidades deixam de ser aproveitadas.',
+ relacionamento:'Algumas escolhas priorizaram outros objetivos sobre a confiança de clientes, equipe ou parceiros.',
+ riscos:'Em alguns momentos, a empresa ficou mais exposta a imprevistos e mudanças de cenário.'
+};
+function finish(){stopAll();show('suspense');$('#suspenseName').textContent=playerName;play('final');setTimeout(finalScreen,Math.min(6500,Math.max(4000,(audio.final.duration||5)*1000)))}
+function finalScreen(){
+ stopAll();const p=norm(),[n,d]=classify(p);
+ $('#profileTitle').textContent=n;$('#profileDesc').textContent=d;$('#fCash').textContent=money(company.caixa);$('#fRep').textContent=Math.round(company.reputacao);$('#fCap').textContent=Math.round(company.capacidade);$('#fGrowth').textContent=Math.round(company.crescimento);$('#fRisk').textContent=Math.round(company.risco);
+ const e=Object.entries(p).sort((a,b)=>b[1]-a[1]),best=e[0][0],low=e[e.length-1][0];
+ $('#bestTitle').textContent=comp[best][0];$('#bestText').textContent=comp[best][1];$('#attentionTitle').textContent=comp[low][0];$('#attentionText').textContent=att[low];drawRadar(p);show('final');
+}
+function drawRadar(p){
+ const c=$('#radar'),x=c.getContext('2d'),dpr=window.devicePixelRatio||1,w=470,h=350;
+ c.width=w*dpr;c.height=h*dpr;x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);
+ const cx=w/2,cy=h/2+4,r=112,keys=['planejamento','financeiro','oportunidades','relacionamento','riscos'],labs=['Planejamento','Gestão Financeira','Crescimento','Reputação','Gestão de Riscos'];
+ const pt=(i,rr)=>{let a=-Math.PI/2+i*2*Math.PI/5;return[cx+Math.cos(a)*rr,cy+Math.sin(a)*rr]};
+ x.strokeStyle='#a6b8c8';x.lineWidth=1;
+ for(let z=1;z<=5;z++){x.beginPath();for(let i=0;i<5;i++){let [px,py]=pt(i,r*z/5);i?x.lineTo(px,py):x.moveTo(px,py)}x.closePath();x.stroke()}
+ for(let i=0;i<5;i++){let [px,py]=pt(i,r);x.beginPath();x.moveTo(cx,cy);x.lineTo(px,py);x.stroke()}
+ x.fillStyle='rgba(6,52,109,.18)';x.strokeStyle='#06346d';x.lineWidth=3;x.beginPath();
+ keys.forEach((k,i)=>{let [px,py]=pt(i,r*p[k]/100);i?x.lineTo(px,py):x.moveTo(px,py)});x.closePath();x.fill();x.stroke();
+ x.fillStyle='#06346d';x.font='700 12px Arial';x.textAlign='center';labs.forEach((l,i)=>{let [px,py]=pt(i,r+32);x.fillText(l,px,py+4)});
+}
+function review(){$('#reviewList').innerHTML=history.map((h,i)=>`<div class="review-item"><b>${i+1}. ${h.q.area} — ${h.q.titulo}</b><div>Sua decisão: ${h.a.texto}</div><div class="muted">${h.a.feedback}</div></div>`).join('');show('review')}
+function restart(){show('welcome')}
+function home(){show('cover')}
+document.addEventListener('DOMContentLoaded',()=>{
+ $('#startBtn').onclick=enterWelcome;$('#beginBtn').onclick=begin;$('#nextBtn').onclick=proceed;$('#reviewBtn').onclick=review;$('#reviewBack').onclick=()=>show('final');$('#restartBtn').onclick=restart;$('#homeBtn').onclick=home;
+ $('#soundBtn').onclick=()=>{soundOn=!soundOn;$('#soundBtn').textContent=soundOn?'🔊':'🔇';if(!soundOn)stopAll()};
+ $('#playerName').addEventListener('keydown',e=>{if(e.key==='Enter')begin()});
+});
+</script>
+</body>
+</html>
