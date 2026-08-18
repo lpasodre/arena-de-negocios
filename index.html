@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#073b8c">
+  <title>Arena de Negócios</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <section id="cover" class="screen cover">
+    <div class="cover-actions">
+      <button id="startBtn" class="primary big">COMEÇAR</button>
+    </div>
+  </section>
+
+  <section id="welcome" class="screen hidden">
+    <div class="panel">
+      <div class="welcome-brand" aria-label="Arena de Negócios — Administração e Ciências Contábeis"></div>
+      <span class="label">Bem-vindo(a) à Arena</span>
+      <h2>Você acaba de assumir uma empresa.</h2>
+      <p>Ao longo de 10 desafios, você precisará decidir como usar seus recursos, aproveitar oportunidades e lidar com riscos. Não existe uma única forma certa de administrar: cada escolha traz ganhos e renúncias.</p>
+      <div class="vars">
+        <div class="var">💰 <b>Caixa</b><small>recursos disponíveis</small></div>
+        <div class="var">⭐ <b>Reputação</b><small>confiança no negócio</small></div>
+        <div class="var">⚙️ <b>Capacidade</b><small>quanto consegue entregar</small></div>
+        <div class="var">📈 <b>Crescimento</b><small>desenvolvimento da empresa</small></div>
+        <div class="var">⚠️ <b>Risco</b><small>exposição a problemas</small></div>
+      </div>
+      <div class="name-row">
+        <input id="playerName" maxlength="24" placeholder="Digite seu nome (opcional)">
+        <button id="beginBtn" class="primary">INICIAR JORNADA</button>
+      </div>
+      <p class="muted" style="margin-top:12px">Algumas escolhas podem ficar indisponíveis quando sua empresa não possui recursos suficientes. O jogo sempre explicará o motivo.</p>
+    </div>
+  </section>
+
+  <section id="game" class="screen hidden" style="display:block;padding:0">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="brand-mini">ARENA DE NEGÓCIOS</div>
+        <div class="score-strip">
+          <span class="pill">💰 <b id="hCaixa">R$ 100</b></span>
+          <span class="pill">⭐ <b id="hRep">50</b></span>
+          <span class="pill">⚙️ <b id="hCap">50</b></span>
+          <span class="pill">📈 <b id="hCres">30</b></span>
+          <span class="pill">⚠️ <b id="hRisk">20</b></span>
+        </div>
+        <button id="soundBtn" class="sound" title="Ativar/desativar som">🔊</button>
+      </div>
+    </div>
+    <main class="game-wrap">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px">
+        <span id="roundText" class="label">Rodada 1 de 10</span>
+        <span class="muted">Escolha com base na situação atual da empresa</span>
+      </div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <article class="challenge-card">
+        <span id="area" class="area-badge">Área</span>
+        <h2 id="title"></h2>
+        <p id="situation" class="situacao"></p>
+        <div id="options" class="options"></div>
+
+        <div id="feedback" class="feedback hidden">
+          <div class="label">Consequência da decisão</div>
+          <div id="effects" class="effects"></div>
+          <p id="feedbackText"></p>
+          <div id="concept" class="concept"></div>
+        </div>
+        <div class="next-row">
+          <button id="nextBtn" class="primary hidden">PRÓXIMO DESAFIO</button>
+        </div>
+      </article>
+    </main>
+  </section>
+
+  <section id="suspense" class="screen hidden">
+    <div class="panel suspense">
+      <span class="label">Jornada concluída</span>
+      <h2><span id="suspenseName"></span>, estamos analisando suas decisões...</h2>
+      <div class="loader"></div>
+      <p class="muted">Caixa, crescimento, riscos, relacionamentos e a forma como você escolheu serão combinados para revelar seu perfil.</p>
+    </div>
+  </section>
+
+  <section id="final" class="screen hidden">
+    <div class="panel">
+      <span class="label">Sua jornada chegou ao fim</span>
+      <h1 id="profileTitle">🎯 Gestor Estratégico</h1>
+      <p id="profileDesc" class="situacao"></p>
+
+      <div class="final-grid">
+        <div>
+          <h3>Sua empresa terminou assim</h3>
+          <div class="result-box">
+            <div class="result-stats">
+              <div class="result-stat">💰<b id="fCaixa"></b><small>Caixa</small></div>
+              <div class="result-stat">⭐<b id="fRep"></b><small>Reputação</small></div>
+              <div class="result-stat">⚙️<b id="fCap"></b><small>Capacidade</small></div>
+              <div class="result-stat">📈<b id="fCres"></b><small>Crescimento</small></div>
+              <div class="result-stat">⚠️<b id="fRisk"></b><small>Risco</small></div>
+            </div>
+          </div>
+
+          <div class="competence">
+            <div>
+              <h3>🏆 Maior competência</h3>
+              <strong id="bestTitle"></strong>
+              <p id="bestText" class="muted" style="margin-top:7px"></p>
+            </div>
+            <div>
+              <h3>⚠️ Principal ponto de atenção</h3>
+              <strong id="attentionTitle"></strong>
+              <p id="attentionText" class="muted" style="margin-top:7px"></p>
+            </div>
+          </div>
+        </div>
+        <div class="radar-wrap">
+          <h3 style="text-align:center">Seu radar de competências</h3>
+          <canvas id="radar"></canvas>
+        </div>
+      </div>
+
+      <p style="margin-top:20px"><b>Você acabou de administrar uma empresa.</b> Durante a jornada, tomou decisões envolvendo pessoas, clientes, produção, dinheiro, informações contábeis, tributos e riscos — temas presentes em Administração e Ciências Contábeis.</p>
+      <div class="actions">
+        <button id="restartBtn" class="primary">🔄 NOVA JORNADA</button>
+        <button id="reviewBtn" class="secondary">📋 REVER MINHAS DECISÕES</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="review" class="screen hidden">
+    <div class="panel">
+      <span class="label">Sua trajetória</span>
+      <h2>Decisões da partida</h2>
+      <div id="reviewList"></div>
+      <div class="actions"><button id="reviewBack" class="secondary">← VOLTAR AO RESULTADO</button></div>
+    </div>
+  </section>
+
+</div>
+<script src="js/questions.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
