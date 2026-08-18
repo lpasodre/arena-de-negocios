@@ -226,7 +226,7 @@ button{cursor:pointer}
   <div>
    <div class="speech">
     <h1>Ei Gestor(a), bem-vindo(a) ao Arena de Negócios. Vamos iniciar nossa jornada no mundo corporativo?</h1>
-    <p>Você terá <b>8 desafios</b>. Cada escolha pode fortalecer uma parte da empresa e pressionar outra. Observe seu caixa: algumas decisões só estarão disponíveis se a empresa puder bancá-las.</p>
+    <p>Você terá <b>6 desafios</b>. Cada escolha pode fortalecer uma parte da empresa e pressionar outra. Observe seu caixa: algumas decisões só estarão disponíveis se a empresa puder bancá-las.</p>
    </div>
    <div class="welcome-controls"><input id="playerName" maxlength="24" placeholder="Seu nome (opcional)"><button id="beginBtn" class="ppt-button">Jogar!</button></div>
   </div>
@@ -249,7 +249,7 @@ button{cursor:pointer}
  <div class="hud">
   <div class="hud-brand"><img src="assets/images/logos-cursos.png" alt=""><div>ARENA DE<br>NEGÓCIOS</div></div>
   <div class="meters">
-   <div class="meter"><div class="meter-top"><span>💰 Caixa</span><b id="cash">R$ 100</b></div><div class="bar"><span id="barCash"></span></div></div>
+   <div class="meter"><div class="meter-top"><span>💰 Caixa</span><b id="cash">R$ 120</b></div><div class="bar"><span id="barCash"></span></div></div>
    <div class="meter"><div class="meter-top"><span>⭐ Reputação</span><b id="rep">50</b></div><div class="bar"><span id="barRep"></span></div></div>
    <div class="meter"><div class="meter-top"><span>⚙️ Capacidade</span><b id="cap">50</b></div><div class="bar"><span id="barCap"></span></div></div>
    <div class="meter"><div class="meter-top"><span>📈 Crescimento</span><b id="growth">30</b></div><div class="bar"><span id="barGrowth"></span></div></div>
@@ -318,7 +318,7 @@ const audio={
 };
 Object.values(audio).forEach(a=>{a.preload='auto';a.volume=.82});
 let soundOn=true,playerName='',round=0,deck=[],history=[],pendingConsequence=null,consequenceUsed=false;
-const maxRounds=8;
+const maxRounds=6;
 let company,profile;
 const areaOrder=['Marketing','Gestão de Pessoas','Produção e Operações','Finanças','Contabilidade','Tributação'];
 const areaTitle={
@@ -329,7 +329,7 @@ const areaTitle={
  'Contabilidade':'Tomada de\nDecisão na área\ncontábil.',
  'Tributação':'Tomada de\nDecisão na área\ntributária.'
 };
-function reset(){company={caixa:100,reputacao:50,capacidade:50,crescimento:30,risco:20};profile={planejamento:0,financeiro:0,oportunidades:0,relacionamento:0,riscos:0};round=0;history=[];pendingConsequence=null;consequenceUsed=false}
+function reset(){company={caixa:120,reputacao:50,capacidade:50,crescimento:30,risco:20};profile={planejamento:0,financeiro:0,oportunidades:0,relacionamento:0,riscos:0};round=0;history=[];pendingConsequence=null;consequenceUsed=false}
 function clamp(v,a=0,b=100){return Math.max(a,Math.min(b,v))}
 function money(v){return `R$ ${Math.round(v)}`}
 function play(n){if(!soundOn)return;const a=audio[n];a.currentTime=0;a.play().catch(()=>{})}
@@ -437,7 +437,7 @@ function render(){
 }
 function hud(){
  $('#cash').textContent=money(company.caixa);$('#rep').textContent=Math.round(company.reputacao);$('#cap').textContent=Math.round(company.capacidade);$('#growth').textContent=Math.round(company.crescimento);$('#risk').textContent=Math.round(company.risco);
- $('#barCash').style.width=`${clamp(company.caixa)}%`;$('#barRep').style.width=`${company.reputacao}%`;$('#barCap').style.width=`${company.capacidade}%`;$('#barGrowth').style.width=`${company.crescimento}%`;$('#barRisk').style.width=`${company.risco}%`;
+ $('#barCash').style.width=`${clamp((company.caixa/120)*100)}%`;$('#barRep').style.width=`${company.reputacao}%`;$('#barCap').style.width=`${company.capacidade}%`;$('#barGrowth').style.width=`${company.crescimento}%`;$('#barRisk').style.width=`${company.risco}%`;
 }
 function choose(q,a){
  play('decisao');document.querySelectorAll('.option').forEach(b=>b.disabled=true);
@@ -488,16 +488,72 @@ function continueAfterConsequence(){
 }
 function norm(){const m=maxRounds*5;return Object.fromEntries(Object.entries(profile).map(([k,v])=>[k,clamp(Math.round(v/m*100))]))}
 function classify(p){
- const vals=Object.values(p),avg=vals.reduce((a,b)=>a+b,0)/vals.length,range=Math.max(...vals)-Math.min(...vals);
- if(p.planejamento>=70&&p.riscos>=65&&p.oportunidades>=45)return['Gestor(a) Estratégico(a)','Você apresentou equilíbrio entre análise, resultados e exposição ao risco. Seu perfil demonstra visão estratégica, capacidade de planejamento e preocupação com sustentabilidade e crescimento contínuo.'];
- if(p.financeiro>=72&&p.oportunidades>=55)return['Focado(a) em Resultados','Você demonstrou foco em resultados e coragem para buscar crescimento. Em alguns momentos, priorizou retorno e velocidade acima da estabilidade.'];
- if(p.relacionamento>=72)return['Construtor(a) de Reputação','Você demonstrou preocupação com credibilidade, qualidade e confiança nas decisões tomadas, valorizando relações sólidas e sustentáveis.'];
- if(p.oportunidades>=72&&p.riscos<=45)return['Tomador(a) de Risco','Você demonstrou iniciativa e disposição para assumir riscos em busca de grandes resultados e crescimento.'];
- if(p.planejamento<=42&&p.oportunidades>=60)return['Decisor(a) Ágil','Você demonstrou iniciativa e rapidez nas decisões. Sua agilidade é uma força, mas exige atenção à análise dos riscos e consequências.'];
- if(p.riscos>=78&&p.oportunidades<=48)return['Conservador(a)','Você demonstrou cautela e preocupação com estabilidade, evitando exposições altas. Isso reduz perdas, mas pode limitar algumas oportunidades.'];
- if(p.financeiro>=65&&p.planejamento<=48)return['Gestor(a) de Curto Prazo','Você demonstrou foco em resultados rápidos e capacidade de responder de forma prática às situações, com atenção especial necessária aos impactos futuros.'];
- if(range<=25||(avg>=48&&avg<=72))return['Gestor(a) Equilibrado(a)','Você demonstrou equilíbrio nas decisões, buscando estabilidade sem comprometer oportunidades e reputação.'];
- return['Gestor(a) Estratégico(a)','Você demonstrou capacidade de combinar diferentes critérios e ajustar sua postura conforme os desafios da empresa.'];
+ const companyNorm={
+   financeiro:clamp((company.caixa/120)*100),
+   reputacao:company.reputacao,
+   capacidade:company.capacidade,
+   crescimento:company.crescimento,
+   seguranca:100-company.risco
+ };
+
+ const dna={
+   'Gestor(a) Estratégico(a)':{
+     perfil:{planejamento:88,financeiro:72,oportunidades:72,relacionamento:64,riscos:82},
+     empresa:{financeiro:65,reputacao:65,capacidade:65,crescimento:72,seguranca:68},
+     descricao:'Você combinou análise, uso dos recursos e busca de oportunidades, procurando crescer sem perder de vista a sustentabilidade das decisões.'
+   },
+   'Focado(a) em Resultados':{
+     perfil:{planejamento:58,financeiro:90,oportunidades:78,relacionamento:48,riscos:52},
+     empresa:{financeiro:82,reputacao:52,capacidade:60,crescimento:70,seguranca:48},
+     descricao:'Você orientou suas decisões para retorno e desempenho, aceitando algumas renúncias para proteger ou ampliar os resultados da empresa.'
+   },
+   'Construtor(a) de Reputação':{
+     perfil:{planejamento:68,financeiro:52,oportunidades:52,relacionamento:92,riscos:72},
+     empresa:{financeiro:55,reputacao:88,capacidade:62,crescimento:58,seguranca:70},
+     descricao:'Você valorizou confiança, relacionamento e consistência, buscando preservar a imagem da empresa mesmo quando isso exigiu abrir mão de ganhos imediatos.'
+   },
+   'Gestor(a) Equilibrado(a)':{
+     perfil:{planejamento:66,financeiro:66,oportunidades:66,relacionamento:66,riscos:66},
+     empresa:{financeiro:62,reputacao:62,capacidade:62,crescimento:62,seguranca:62},
+     descricao:'Você evitou extremos e procurou conciliar recursos, crescimento, reputação e segurança ao longo da jornada.'
+   },
+   'Conservador(a)':{
+     perfil:{planejamento:78,financeiro:78,oportunidades:38,relacionamento:60,riscos:92},
+     empresa:{financeiro:72,reputacao:64,capacidade:52,crescimento:42,seguranca:88},
+     descricao:'Você priorizou estabilidade, reservas e redução da exposição a riscos. Essa postura protege a empresa, embora possa reduzir algumas oportunidades de crescimento.'
+   },
+   'Tomador(a) de Risco':{
+     perfil:{planejamento:44,financeiro:58,oportunidades:94,relacionamento:46,riscos:28},
+     empresa:{financeiro:58,reputacao:50,capacidade:68,crescimento:88,seguranca:30},
+     descricao:'Você demonstrou disposição para assumir incerteza em busca de oportunidades e crescimento, aceitando maior exposição quando identificou potencial de retorno.'
+   },
+   'Decisor(a) Ágil':{
+     perfil:{planejamento:36,financeiro:60,oportunidades:84,relacionamento:50,riscos:42},
+     empresa:{financeiro:60,reputacao:52,capacidade:62,crescimento:76,seguranca:42},
+     descricao:'Você tende a agir rapidamente diante de oportunidades e problemas. Sua velocidade é uma força, mas pede atenção adicional à análise das consequências.'
+   },
+   'Gestor(a) de Curto Prazo':{
+     perfil:{planejamento:42,financeiro:84,oportunidades:62,relacionamento:42,riscos:46},
+     empresa:{financeiro:78,reputacao:46,capacidade:52,crescimento:46,seguranca:44},
+     descricao:'Você respondeu bem às necessidades imediatas e protegeu resultados presentes, mas algumas decisões podem exigir atenção aos impactos futuros.'
+   }
+ };
+
+ function dist(a,b){
+   const keys=Object.keys(a);
+   return Math.sqrt(keys.reduce((sum,k)=>sum+Math.pow((a[k]||0)-(b[k]||0),2),0)/keys.length);
+ }
+
+ let bestName=null,bestScore=Infinity;
+ Object.entries(dna).forEach(([name,d])=>{
+   const scorePerfil=dist(p,d.perfil);
+   const scoreEmpresa=dist(companyNorm,d.empresa);
+   // 65% comportamento, 35% resultado empresarial
+   const total=scorePerfil*.65+scoreEmpresa*.35;
+   if(total<bestScore){bestScore=total;bestName=name}
+ });
+
+ return [bestName,dna[bestName].descricao];
 }
 const comp={
  planejamento:['Planejamento','Você demonstrou capacidade de avaliar consequências antes de comprometer recursos.'],
